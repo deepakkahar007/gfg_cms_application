@@ -8,7 +8,21 @@ import { prisma } from "./db";
 export const { handlers, signIn, signOut, auth } = NextAuth({
   adapter: PrismaAdapter(prisma),
   providers: [GitHub, Google],
+  session: {
+    strategy: "jwt",
+  },
   callbacks: {
+    async jwt({ token, user }) {
+      if (user) {
+        token.id = user.id;
+      }
+      return token;
+    },
+
+    async session({ session, token }) {
+      session.user.id = token.id;
+      return session;
+    },
     authorized: async ({ auth }) => {
       return !!auth;
     },
