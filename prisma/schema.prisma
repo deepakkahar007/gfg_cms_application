@@ -8,9 +8,90 @@ datasource db {
 }
 
 model Blog {
-  id    String @id @default(uuid())
-  title String
+  id        String   @id @default(uuid())
+  title     String
+  category  String
+  image_url String
+  publish   Boolean  @default(true)
+  delete    Boolean  @default(false)
+  trending  Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  like      Like[]
+
+  @@index([id])
+}
+
+model Like {
+  id        String   @id @default(uuid())
+  user_id   String
+  blog_id   String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  blog      Blog     @relation(fields: [blog_id], references: [id])
+  user      User     @relation(fields: [user_id], references: [id])
+
+  @@unique([user_id, blog_id])
+}
+
+model Comment {
+  id        String   @id @default(uuid())
+  user_id   String
+  comment   String
+  pinned    Boolean  @default(false)
+  delete    Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  user      User     @relation(fields: [user_id], references: [id])
+}
+
+model User {
+  id            String    @id @default(cuid())
+  name          String?
+  email         String    @unique
+  emailVerified DateTime?
+  image         String?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  accounts      Account[]
+  session       Session[]
+  comment       Comment[]
+  like          Like[]
+}
+
+model Account {
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String?
+  access_token      String?
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String?
+  session_state     String?
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+  user              User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@id([provider, providerAccountId])
+}
+
+model Session {
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+}
+
+model VerificationToken {
+  identifier String
+  token      String
+  expires    DateTime
+
+  @@id([identifier, token])
 }

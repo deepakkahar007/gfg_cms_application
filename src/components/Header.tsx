@@ -1,4 +1,17 @@
-const Header = () => {
+import Link from "next/link";
+import { Button } from "./ui/button";
+import { auth, signOut } from "@/lib/auth";
+
+const NavLinks = [
+  { id: 1, title: "Home", url: "/" },
+  { id: 2, title: "Categories", url: "/categories" },
+  { id: 3, title: "About", url: "/" },
+  { id: 4, title: "Contact", url: "/" },
+];
+
+const Header = async () => {
+  const user = await auth();
+
   return (
     <header className="sticky top-0 z-50 w-full border-b border-white/10 bg-background-dark/80 backdrop-blur-sm">
       <div className="container mx-auto flex items-center justify-between whitespace-nowrap px-4 py-3">
@@ -29,30 +42,11 @@ const Header = () => {
           </div>
 
           <nav className="hidden md:flex items-center gap-9">
-            <a
-              className="text-white text-sm font-medium hover:text-primary"
-              href="#"
-            >
-              Home
-            </a>
-            <a
-              className="text-neutral-400 text-sm font-medium hover:text-primary"
-              href="#"
-            >
-              Categories
-            </a>
-            <a
-              className="text-neutral-400 text-sm font-medium hover:text-primary"
-              href="#"
-            >
-              About
-            </a>
-            <a
-              className="text-neutral-400 text-sm font-medium hover:text-primary"
-              href="#"
-            >
-              Contact
-            </a>
+            {NavLinks.map((item) => (
+              <Button key={item.id} variant={"ghost"} asChild>
+                <Link href={item.url}>{item.title}</Link>
+              </Button>
+            ))}
           </nav>
         </div>
 
@@ -69,12 +63,22 @@ const Header = () => {
           </label>
 
           <div className="hidden sm:flex gap-2">
-            <button className="rounded-lg h-10 px-4 bg-primary text-white text-sm font-bold hover:bg-primary/90">
-              Sign Up
-            </button>
-            <button className="rounded-lg h-10 px-4 bg-white/10 text-white text-sm font-bold hover:bg-white/20">
-              Log In
-            </button>
+            {user?.user ? (
+              <form
+                action={async () => {
+                  "use server";
+                  await signOut({ redirectTo: "/" });
+                }}
+              >
+                <button type="submit">Sign Out</button>
+              </form>
+            ) : (
+              <Link href={"/login"}>
+                <Button className="rounded-lg h-10 px-4 bg-white/10 text-white text-sm font-bold hover:bg-white/20">
+                  Log In
+                </Button>
+              </Link>
+            )}
           </div>
         </div>
       </div>

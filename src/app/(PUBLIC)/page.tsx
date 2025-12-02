@@ -1,13 +1,9 @@
-import Footer from "@/components/Footer";
-import Header from "@/components/Header";
 import RecentPostCard from "@/components/RecentPostCard";
 import TrendCard from "@/components/TrendCard";
 
 export default function Home() {
   return (
     <div className="relative flex min-h-screen w-full flex-col font-display bg-background-light dark:bg-background-dark">
-      {/* ===================== HEADER ===================== */}
-      <Header />
       {/* ===================== MAIN ===================== */}
       <main className="grow">
         <div className="container mx-auto px-4 py-8 md:py-12">
@@ -163,9 +159,6 @@ export default function Home() {
           </section>
         </div>
       </main>
-
-      {/* ===================== FOOTER ===================== */}
-      <Footer />
     </div>
   );
 }

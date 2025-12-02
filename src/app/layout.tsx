@@ -1,7 +1,10 @@
-import type { Metadata } from "next";
-import { Montserrat } from "next/font/google";
-import "./globals.css";
 import { NextTheme } from "@/components/NextTheme";
+import type { Metadata } from "next";
+import { SessionProvider } from "next-auth/react";
+import { Montserrat } from "next/font/google";
+import { Toaster } from "@/components/ui/sonner";
+
+import "./globals.css";
 
 const monteserrat = Montserrat({
   variable: "--font-monteserrat-sans",
@@ -27,7 +30,8 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          {children}
+          <SessionProvider>{children}</SessionProvider>
+          <Toaster />
         </NextTheme>
       </body>
     </html>
